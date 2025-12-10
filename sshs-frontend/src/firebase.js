@@ -14,6 +14,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
+console.log("VAPID KEY:", import.meta.env.VITE_FIREBASE_VAPID_KEY);
+
+
 let messaging = null;
 try {
   messaging = getMessaging(app);
