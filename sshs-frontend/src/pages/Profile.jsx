@@ -223,7 +223,7 @@ const EditProfileForm = ({ user }) => {
       }
 
       const { data } = await api.put('/auth/profile', payload);
-      alert('Profile Updated!');
+      alert('Profile Updated, please re-login!');
       localStorage.setItem('sshs_user', JSON.stringify(data));
       window.location.reload();
     } catch (error) {
@@ -263,41 +263,6 @@ const EditProfileForm = ({ user }) => {
           className={inputBase}
         />
       </div>
-
-      {user.role === 'student' && (
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          <div>
-            <label className="mb-1 block text-xs text-white/70">
-              Grade Level
-            </label>
-            <div
-              className="
-                flex h-11 items-center rounded-full
-                border border-white/25 bg-white/[0.03]
-                px-4 text-sm text-white/70
-                backdrop-blur-[8px]
-                shadow-[inset_0_0_10px_rgba(255,255,255,0.18)]
-              "
-            >
-              Grade {formData.gradeLevel || 'Not Set'}
-            </div>
-          </div>
-          <div>
-            <label className="mb-1 block text-xs text-white/70">Major</label>
-            <div
-              className="
-                flex h-11 items-center rounded-full
-                border border-white/25 bg-white/[0.03]
-                px-4 text-sm text-white/70
-                backdrop-blur-[8px]
-                shadow-[inset_0_0_10px_rgba(255,255,255,0.18)]
-              "
-            >
-              {formData.major}
-            </div>
-          </div>
-        </div>
-      )}
 
       <div>
         <label className="mb-1 block text-xs text-white/70">Address</label>
