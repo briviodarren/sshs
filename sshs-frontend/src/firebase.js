@@ -23,7 +23,8 @@ try {
 
 /**
  * Request FCM token for this browser.
- * Returns token string or null on failure.
+ * We explicitly use the existing service worker registration so Firebase
+ * doesn't try to register its own behind the scenes.
  */
 export const requestForToken = async () => {
   if (!messaging) {
@@ -31,20 +32,39 @@ export const requestForToken = async () => {
     return null;
   }
 
+  if (!("serviceWorker" in navigator)) {
+    console.warn("Service workers are not supported in this browser.");
+    return null;
+  }
+
   try {
+    // Wait for the existing SW registration (the one you already see logged).
+    const registration = await navigator.serviceWorker.ready;
+    console.log("Using SW registration for FCM:", registration);
+
     const currentToken = await getToken(messaging, {
       vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+      serviceWorkerRegistration: registration,
     });
 
     if (currentToken) {
       console.log("Got FCM token:", currentToken);
       return currentToken;
     } else {
-      console.log("No registration token available.");
+      console.log(
+        "No registration token available (permission may be 'default' or 'denied')."
+      );
       return null;
     }
   } catch (err) {
-    console.error("An error occurred while retrieving token.", err);
+    console.error("An error occurred while retrieving token.");
+    console.error("name:", err.name);
+    console.error("message:", err.message);
+    console.error("stack:", err.stack);
+    // If it's a FirebaseError, log its code too
+    if (err.code) {
+      console.error("code:", err.code);
+    }
     return null;
   }
 };
