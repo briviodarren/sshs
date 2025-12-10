@@ -14,12 +14,27 @@ connectDB();
 const app = express();
 
 // Middlewares
+const allowedOrigins = [
+  "http://localhost:5173",          // Vite dev
+  "https://sshs-vert.vercel.app",   // Frontend di Vercel
+];
+
 app.use(
   cors({
-    origin: '*', // Allow all origins temporarily
+    origin: function (origin, callback) {
+      // Allow requests with no origin (e.g. mobile apps, Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      // Optional: log blocked origin
+      console.warn("CORS blocked origin:", origin);
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   })
 );
+
 app.use(express.json()); // Body parser for JSON
 app.use(express.urlencoded({ extended: false })); // Body parser for URL encoded data
 
