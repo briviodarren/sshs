@@ -14,7 +14,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-console.log("VAPID KEY:", import.meta.env.VITE_FIREBASE_VAPID_KEY);
+console.log("VAPID KEY:", import.meta.env.FIREBASE_VAPID_KEY);
 
 
 let messaging = null;
@@ -46,7 +46,7 @@ export const requestForToken = async () => {
     console.log("Using SW registration for FCM:", registration);
 
     const currentToken = await getToken(messaging, {
-      vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+      vapidKey: import.meta.env.FIREBASE_VAPID_KEY,
       serviceWorkerRegistration: registration,
     });
 
