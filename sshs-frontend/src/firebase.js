@@ -1,3 +1,4 @@
+// sshs-frontend/src/firebase.js
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
@@ -8,16 +9,32 @@ const firebaseConfig = {
   storageBucket: "sshs-portal.firebasestorage.app",
   messagingSenderId: "245047416712",
   appId: "1:245047416712:web:90f18eeccba921bca5cc3d",
-  measurementId: "G-DNX8SHMT7T"
+  measurementId: "G-DNX8SHMT7T",
 };
 
 const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
 
+let messaging: ReturnType<typeof getMessaging> | null = null;
+try {
+  messaging = getMessaging(app);
+} catch (err) {
+  console.error("Failed to init Firebase Messaging:", err);
+}
+
+/**
+ * Request FCM token for this browser.
+ * Returns token string or null on failure.
+ */
 export const requestForToken = async () => {
+  if (!messaging) {
+    console.warn("Messaging not initialized, cannot get token.");
+    return null;
+  }
+
   try {
     const currentToken = await getToken(messaging, {
       vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+      // kalau nanti mau, kita bisa tambahin serviceWorkerRegistration di sini
     });
 
     if (currentToken) {
@@ -28,13 +45,17 @@ export const requestForToken = async () => {
       return null;
     }
   } catch (err) {
-    console.log("An error occurred while retrieving token.", err);
+    console.error("An error occurred while retrieving token.", err);
     return null;
   }
 };
 
 export const onMessageListener = () =>
   new Promise((resolve) => {
+    if (!messaging) {
+      console.warn("Messaging not initialized, cannot listen for messages.");
+      return;
+    }
     onMessage(messaging, (payload) => {
       resolve(payload);
     });
