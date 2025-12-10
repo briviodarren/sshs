@@ -152,12 +152,7 @@ const Permit = () => {
   const pendingList = filteredPermits.filter((p) => p.status === 'Pending');
   const historyList = filteredPermits.filter((p) => p.status !== 'Pending');
 
-  if (loading)
-    return (
-      <div className="mt-10 text-center text-white/80">
-        Loading permits...
-      </div>
-    );
+
 
   return (
     <div className="mx-auto max-w-4xl pb-10">
