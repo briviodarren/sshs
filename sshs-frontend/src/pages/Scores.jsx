@@ -163,12 +163,6 @@ const StudentScoresView = () => {
     navigate('/critique', { state: { preSelectClassId: classId } });
   };
 
-  if (loading)
-    return (
-      <div className="mt-8 text-center text-white/80">
-        Loading scores...
-      </div>
-    );
 
   return (
     <div className="mt-4 space-y-6">
