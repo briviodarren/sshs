@@ -1,3 +1,4 @@
+// sshs-backend/server.js
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
@@ -6,17 +7,19 @@ const connectDB = require('./config/db');
 // Load env vars
 dotenv.config();
 
-// Connect to Database
+// Connect to Database (runs once per cold start in Vercel)
 connectDB();
 
 // Initialize express app
 const app = express();
 
 // Middlewares
-app.use(cors({
-  origin: "*", // Allow all origins temporarily
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: '*', // Allow all origins temporarily
+    credentials: true,
+  })
+);
 app.use(express.json()); // Body parser for JSON
 app.use(express.urlencoded({ extended: false })); // Body parser for URL encoded data
 
@@ -51,11 +54,11 @@ app.get('/', (req, res) => {
   res.send('SSHS Backend API is running...');
 });
 
-// Error Handling Middleware (Optional but recommended)
+// Error Handling Middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Something went wrong!' });
 });
 
-// Start the server
-module.exports = app; 
+// Export app for Vercel serverless
+module.exports = app;
