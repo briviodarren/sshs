@@ -182,16 +182,47 @@ const TabButton = ({ id, label, active, onClick, icon }) => (
 // --- 1. Edit Profile Form ---
 const EditProfileForm = ({ user }) => {
   const [formData, setFormData] = useState({
-    name: user.name,
-    email: user.email,
+    name: user.name || '',
+    email: user.email || '',
     address: user.address || '',
     password: '',
+    gradeLevel: user.gradeLevel || '',
+    major: user.major || '',
   });
+
+  // keep local form data in sync if user object changes
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      name: user.name || '',
+      email: user.email || '',
+      address: user.address || '',
+      gradeLevel: user.gradeLevel || '',
+      major: user.major || '',
+    }));
+  }, [user.name, user.email, user.address, user.gradeLevel, user.major]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await api.put('/auth/profile', formData);
+      // send all editable profile fields;
+      // only include password if the user actually typed one
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        address: formData.address,
+      };
+
+      if (formData.password.trim()) {
+        payload.password = formData.password.trim();
+      }
+
+      if (user.role === 'student') {
+        payload.gradeLevel = formData.gradeLevel;
+        payload.major = formData.major;
+      }
+
+      const { data } = await api.put('/auth/profile', payload);
       alert('Profile Updated!');
       localStorage.setItem('sshs_user', JSON.stringify(data));
       window.location.reload();
@@ -248,7 +279,7 @@ const EditProfileForm = ({ user }) => {
                 shadow-[inset_0_0_10px_rgba(255,255,255,0.18)]
               "
             >
-              Grade {user.gradeLevel || 'Not Set'}
+              Grade {formData.gradeLevel || 'Not Set'}
             </div>
           </div>
           <div>
@@ -262,7 +293,7 @@ const EditProfileForm = ({ user }) => {
                 shadow-[inset_0_0_10px_rgba(255,255,255,0.18)]
               "
             >
-              {user.major || 'None'}
+              {formData.major || 'None'}
             </div>
           </div>
         </div>
