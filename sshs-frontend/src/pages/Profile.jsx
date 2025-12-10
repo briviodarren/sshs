@@ -293,7 +293,7 @@ const EditProfileForm = ({ user }) => {
                 shadow-[inset_0_0_10px_rgba(255,255,255,0.18)]
               "
             >
-              {formData.major || 'None'}
+              {formData.major}
             </div>
           </div>
         </div>
