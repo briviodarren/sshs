@@ -46,7 +46,7 @@ export const requestForToken = async () => {
     console.log("Using SW registration for FCM:", registration);
 
     const currentToken = await getToken(messaging, {
-      vapidKey: import.meta.env.FIREBASE_VAPID_KEY,
+      vapidKey: "BAXVKNhxozZDWJGKgLzhugTrZnreSLfN_L_wITPm1Uwvjh-eW0SrpRTK4-0VPsWLwP9bOYg6rx_szjQBJBv-wzE",
       serviceWorkerRegistration: registration,
     });
 
