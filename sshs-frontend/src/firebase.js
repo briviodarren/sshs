@@ -14,7 +14,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-let messaging: ReturnType<typeof getMessaging> | null = null;
+let messaging = null;
 try {
   messaging = getMessaging(app);
 } catch (err) {
@@ -34,7 +34,6 @@ export const requestForToken = async () => {
   try {
     const currentToken = await getToken(messaging, {
       vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
-      // kalau nanti mau, kita bisa tambahin serviceWorkerRegistration di sini
     });
 
     if (currentToken) {
